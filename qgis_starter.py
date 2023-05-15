@@ -6,6 +6,7 @@ from qgis.PyQt.QtGui import QFont
 from qgis.PyQt.QtCore import Qt
 from pathlib import Path
 import subprocess
+import os
 
 
 def start_qgis():
@@ -13,7 +14,15 @@ def start_qgis():
     font = QFont("Ubuntu", 15)
     app.setFont(font)
 
-    profile_path = Path.home() / Path(".local/share/QGIS/QGIS3/profiles")
+    if os.name == "nt":
+        profile_path = (
+            Path.home() / Path("AppData/Roaming/QGIS/QGIS3/profiles")
+        )
+        qgis_path = Path(os.environ.get("OSGEO4W_ROOT")) / Path("bin/qgis.bat")
+    else:
+        profile_path = Path.home() / Path(".local/share/QGIS/QGIS3/profiles")
+        qgis_path = "qgis"
+
     profiles = [
         path.name
         for path in profile_path.iterdir()
@@ -46,7 +55,7 @@ def start_qgis():
         if answer == QMessageBox.No:
             return
 
-    subprocess.run(["qgis", "--profile", profile])
+    subprocess.run([qgis_path, "--profile", profile])
 
 
 if __name__ == '__main__':

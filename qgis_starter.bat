@@ -1,0 +1,1 @@
+"C:\Program Files\QGIS 3.28.2\bin\python-qgis.bat" qgis_starter.py
