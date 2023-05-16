@@ -10,6 +10,7 @@ import os
 
 
 def start_qgis():
+    print("test")
     if os.name == "nt":
         profile_path = (
             Path.home() / Path("AppData/Roaming/QGIS/QGIS3/profiles")
