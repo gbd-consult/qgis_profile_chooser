@@ -9,8 +9,33 @@ import subprocess
 import os
 
 
+def choose_qgis(dirs):
+    completer = QCompleter(dirs, None)
+    completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
+    completer.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
+    completer.setCaseSensitivity(Qt.CaseInsensitive)
+    line_edit = QLineEdit()
+    line_edit.setCompleter(completer)
+    dialog = QDialog()
+    layout = QVBoxLayout()
+    layout.addWidget(line_edit)
+    dialog.setLayout(layout)
+    dialog.setWindowTitle("Choose QGIS Install:")
+    line_edit.returnPressed.connect(dialog.accept)
+    dialog.exec_()
+
+    return line_edit.text()
+
+
 def start_qgis():
-    print("test")
+    if os.name == "nt":
+        font_name = "Segoe UI"
+    else:
+        font_name = "Ubuntu"
+
+    app = QApplication()
+    app.setFont(QFont(font_name, 15))
+
     if os.name == "nt":
         profile_path = (
             Path.home() / Path("AppData/Roaming/QGIS/QGIS3/profiles")
@@ -20,18 +45,23 @@ def start_qgis():
             if path.is_dir()
             and path.stem.startswith("QGIS")
         ]
-        print(qgis_dirs)
-        QMessageBox.information(
-            None, "hi", ",".join([q.name for q in qgis_dirs]))
-        qgis_path = Path(os.environ.get("OSGEO4W_ROOT")) / Path("bin/qgis.bat")
-        font = QFont("Segoe UI", 15)
+        if len(qgis_dirs) > 1:
+            qgis_dir = choose_qgis(qgis_dirs)
+        elif len(qgis_dirs) == 1:
+            qgis_dir = qgis_dirs[0]
+        else:
+            QMessageBox.critical(None, "Error", "QGIS not found")
+            return
+        if (qgis_dir / Path("bin/qgis.bat")).exists():
+            qgis_path = qgis_dir / Path("bin/qgis.bat")
+        elif (qgis_dir / Path("bin/qgis-ltr.bat")).exists():
+            qgis_path = qgis_dir / Path("bin/qgis-ltr.bat")
+        else:
+            QMessageBox.critical(None, "Error", "QGIS bat not found")
+            return
     else:
         profile_path = Path.home() / Path(".local/share/QGIS/QGIS3/profiles")
         qgis_path = "qgis"
-        font = QFont("Ubuntu", 15)
-
-    app = QApplication([])
-    app.setFont(font)
 
     profiles = [
         path.name
