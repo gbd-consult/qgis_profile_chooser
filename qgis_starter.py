@@ -15,7 +15,7 @@ def start_qgis():
             Path.home() / Path("AppData/Roaming/QGIS/QGIS3/profiles")
         )
         qgis_dirs = [
-            path for path in Path("c:/Program Files")
+            path for path in Path("c:/Program Files").iterdir()
             if path.is_dir()
             and path.stem.startwith("QGIS")
         ]
