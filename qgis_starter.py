@@ -1,27 +1,28 @@
 #!/usr/bin/env python
 
-from qgis.PyQt.QtWidgets import (
+from PyQt5.QtWidgets import (
     QApplication, QDialog, QVBoxLayout, QLineEdit, QCompleter, QMessageBox)
-from qgis.PyQt.QtGui import QFont
-from qgis.PyQt.QtCore import Qt
+from PyQt5.QtGui import QFont
+from PyQt5.QtCore import Qt
 from pathlib import Path
 import subprocess
 import os
 
 
 def start_qgis():
-    app = QApplication([])
-    font = QFont("Ubuntu", 15)
-    app.setFont(font)
-
     if os.name == "nt":
         profile_path = (
             Path.home() / Path("AppData/Roaming/QGIS/QGIS3/profiles")
         )
         qgis_path = Path(os.environ.get("OSGEO4W_ROOT")) / Path("bin/qgis.bat")
+        font = QFont("Segoe UI", 15)
     else:
         profile_path = Path.home() / Path(".local/share/QGIS/QGIS3/profiles")
         qgis_path = "qgis"
+        font = QFont("Ubuntu", 15)
+
+    app = QApplication([])
+    app.setFont(font)
 
     profiles = [
         path.name
