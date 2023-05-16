@@ -19,6 +19,7 @@ def start_qgis():
             if path.is_dir()
             and path.stem.startswith("QGIS")
         ]
+        print(qgis_dirs)
         QMessageBox.information(
             None, "hi", ",".join([q.name for q in qgis_dirs]))
         qgis_path = Path(os.environ.get("OSGEO4W_ROOT")) / Path("bin/qgis.bat")
