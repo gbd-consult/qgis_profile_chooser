@@ -20,7 +20,7 @@ import platform
 def choose_qgis(dirs):
     combobox = QComboBox()
     combobox.addItems(dirs)
-    buttonbox = QDialogButtonBox()
+    buttonbox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
     dialog = QDialog()
     layout = QVBoxLayout()
     layout.addWidget(combobox)
