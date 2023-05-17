@@ -6,6 +6,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 from pathlib import Path
 import subprocess
+import sys
 import os
 
 
@@ -33,22 +34,23 @@ def start_qgis():
     else:
         font_name = "Ubuntu"
 
-    app = QApplication()
+    app = QApplication(sys.argv)
     app.setFont(QFont(font_name, 15))
 
     if os.name == "nt":
         profile_path = (
             Path.home() / Path("AppData/Roaming/QGIS/QGIS3/profiles")
         )
-        qgis_dirs = [
-            path for path in Path("c:/Program Files").iterdir()
+        qgis_dirs = {
+            path.name: path
+            for path in Path("c:/Program Files").iterdir()
             if path.is_dir()
             and path.stem.startswith("QGIS")
-        ]
+        }
         if len(qgis_dirs) > 1:
-            qgis_dir = choose_qgis(qgis_dirs)
+            qgis_dir = qgis_dirs[choose_qgis(qgis_dirs.keys())]
         elif len(qgis_dirs) == 1:
-            qgis_dir = qgis_dirs[0]
+            qgis_dir = qgis_dirs[qgis_dirs.keys()[0]]
         else:
             QMessageBox.critical(None, "Error", "QGIS not found")
             return
