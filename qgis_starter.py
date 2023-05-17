@@ -1,7 +1,13 @@
 #!/usr/bin/env python
 
 from PyQt5.QtWidgets import (
-    QApplication, QDialog, QVBoxLayout, QLineEdit, QCompleter, QMessageBox)
+    QApplication,
+    QDialog,
+    QVBoxLayout,
+    QLineEdit,
+    QCompleter,
+    QMessageBox,
+    QComboBox)
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 from pathlib import Path
@@ -11,21 +17,17 @@ import os
 
 
 def choose_qgis(dirs):
-    completer = QCompleter(dirs, None)
-    completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
-    completer.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
-    completer.setCaseSensitivity(Qt.CaseInsensitive)
-    line_edit = QLineEdit()
-    line_edit.setCompleter(completer)
+    combobox = QComboBox()
+    combobox.addItems(dirs)
     dialog = QDialog()
     layout = QVBoxLayout()
-    layout.addWidget(line_edit)
+    layout.addWidget(combobox)
     dialog.setLayout(layout)
     dialog.setWindowTitle("Choose QGIS Install:")
-    line_edit.returnPressed.connect(dialog.accept)
+    combobox.returnPressed.connect(dialog.accept)
     dialog.exec_()
 
-    return line_edit.text()
+    return combobox.currentText()
 
 
 def start_qgis():
