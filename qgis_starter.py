@@ -7,39 +7,44 @@ from PyQt5.QtWidgets import (
     QLineEdit,
     QCompleter,
     QMessageBox,
+    QDialogButtonBox,
     QComboBox)
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 from pathlib import Path
 import subprocess
 import sys
-import os
+import platform
 
 
 def choose_qgis(dirs):
     combobox = QComboBox()
     combobox.addItems(dirs)
+    buttonbox = QDialogButtonBox()
     dialog = QDialog()
     layout = QVBoxLayout()
     layout.addWidget(combobox)
+    layout.addWidget(buttonbox)
     dialog.setLayout(layout)
     dialog.setWindowTitle("Choose QGIS Install:")
-    combobox.returnPressed.connect(dialog.accept)
+    buttonbox.accepted.connect(dialog.accept)
     dialog.exec_()
 
     return combobox.currentText()
 
 
 def start_qgis():
-    if os.name == "nt":
+    if platform.system() == "Windows":
         font_name = "Segoe UI"
+    elif platform.system() == "Darwin":
+        font_name = "San Francisco"
     else:
         font_name = "Ubuntu"
 
     app = QApplication(sys.argv)
     app.setFont(QFont(font_name, 15))
 
-    if os.name == "nt":
+    if platform.system() == "Windows":
         profile_path = (
             Path.home() / Path("AppData/Roaming/QGIS/QGIS3/profiles")
         )
@@ -63,6 +68,12 @@ def start_qgis():
         else:
             QMessageBox.critical(None, "Error", "QGIS bat not found")
             return
+    elif platform.system() == "Darwin":
+        profile_path = (
+            Path.home() /
+            Path("~/Library/Application Support/QGIS/QGIS3/profiles")
+        )
+        qgis_path = "qgis"
     else:
         profile_path = Path.home() / Path(".local/share/QGIS/QGIS3/profiles")
         qgis_path = "qgis"
